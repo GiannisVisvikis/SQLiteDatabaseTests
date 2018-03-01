@@ -10,17 +10,29 @@ public class SQLiteTests{
 
     public static void main(String[] args) {
 
-        /*
-        checkEntries("/home/ioannis/Documents/quiz/cars.txt");
-        checkEntries("/home/ioannis/Documents/quiz/constructors.txt");
-        checkEntries("/home/ioannis/Documents/quiz/drivers.txt");
-        checkEntries("/home/ioannis/Documents/quiz/figures.txt");
-        checkEntries("/home/ioannis/Documents/quiz/helmets.txt");
-        checkEntries("/home/ioannis/Documents/quiz/circuits.txt");
-        */
+        String driversTxtPath = "/Users/ioannis/Documents/quiz/drivers.txt";
+        String constructorsTxtPath = "/Users/ioannis/Documents/quiz/constructors.txt";
+        String circuitsTxtPath = "/Users/ioannis/Documents/quiz/circuits.txt";
+        String helmetsTxtPath = "/Users/ioannis/Documents/quiz/helmets.txt";
+        String figuresTxtPath = "/Users/ioannis/Documents/quiz/figures.txt";
+        String carsTxtPath = "/Users/ioannis/Documents/quiz/cars.txt";
 
+        String[] txtFilePaths = new String[]{driversTxtPath, constructorsTxtPath, circuitsTxtPath, helmetsTxtPath, figuresTxtPath, carsTxtPath};
 
+        String driversTable = "drivers_table";
+        String constructorsTable = "constructors_table";
+        String circuitsTable = "circuits_table";
+        String helmetsTable = "helmets_table";
+        String figuresTable = "figures_table";
+        String carsTable = "cars_table";
 
+        String[] tableNames = new String[]{driversTable, constructorsTable, circuitsTable, helmetsTable, figuresTable, carsTable};
+
+        int[] results = createDatabase("quiz_database.db", txtFilePaths, tableNames);
+
+        for(int resInt=0; resInt<results.length; resInt++){
+            System.out.println(results[resInt]);
+        }
 
     }
 
@@ -49,7 +61,7 @@ public class SQLiteTests{
                     System.out.println("Error in line");
                 else {
 
-                    String imagePath = "/home/ioannis/Documents/quiz/" + entries[1] + ".png";
+                    String imagePath = "/Users/ioannis/Documents/quiz/" + entries[1] + ".png";
 
                     File imageFile = new File(imagePath);
 
@@ -76,33 +88,81 @@ public class SQLiteTests{
 
 
 
-    private void createDatabase(String databaseName, String[] tableNames){
+    private static int[] createDatabase(String databaseFile, String[] txtFilePaths, String[] tableNames){
 
+            int[] results = null;
+
+
+            int counter = 0;
 
            try {
 
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:/home/ioannis/Documents/quiz/databases/quiz_tests.db");
-
-
-            String sqlQuery = "insert into friends values (null, 'gamw tin', 'trela mou', 24);";
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:/Users/ioannis/Documents/quiz/databases/"
+                                                                                            + databaseFile);
 
             Statement statement = connection.createStatement();
 
-            statement.execute(sqlQuery);
+            File readTxtFile;
 
+            for(int index = 0; index < txtFilePaths.length; index++){
+
+                readTxtFile = new File(txtFilePaths[index]);
+
+                String createTableQuery = "create table if not exists " + tableNames[index] + " (id integer primary key autoincrement, link text not null, " +
+                  "photo_path varchar(50) not null, question text not null, answer text not null, false_1 text not null, false_2 text not null, " +
+                  "false_3 text not null);";
+
+                //System.out.println(createTableQuery);
+
+                statement.addBatch(createTableQuery);
+
+                StringBuilder insertQueryBuilder = new StringBuilder("insert into " + tableNames[index] + " values ");
+
+                BufferedReader reader = new BufferedReader(new FileReader(readTxtFile));
+
+                String line;
+
+                while ( (line = reader.readLine()) != null ){
+
+                    String[] entries = line.split(",");
+
+                    String link = ", '" + entries[0].replace("'", "''") + "'";
+                    String photoPath = ", '" + entries[1] + ".png'";
+                    String question = ", '" + entries[2] + "'";
+                    String answer = ", '" + entries[3] + "'";
+                    String false1 = ", '" + entries[4] + "'";
+                    String false2 = ", '" + entries[5] + "'";
+                    String false3 = ", '" + entries[6] + "'";
+
+                    insertQueryBuilder.append("(null" + link + photoPath + question + answer + false1 + false2 + false3 + "),");
+
+                }
+
+
+                String insertQuery = insertQueryBuilder.substring(0, insertQueryBuilder.length() - 1) + ";";
+                //System.out.println(insertQuery);
+
+                statement.addBatch(insertQuery);
+            }
+
+
+            results = statement.executeBatch();
 
         }
         catch (SQLException sql){
             System.out.println(sql.getMessage());
+            System.out.println(counter);
+        }
+        catch (FileNotFoundException fnf){
+               System.out.println(fnf.getMessage());
+        }
+        catch (IOException io){
+            System.out.println(io.getMessage());
         }
 
 
-
-
+        return results;
     }
-
-
-
 
 
 }
