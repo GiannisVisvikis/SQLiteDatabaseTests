@@ -28,7 +28,7 @@ public class SQLiteTests{
 
         String[] tableNames = new String[]{driversTable, constructorsTable, circuitsTable, helmetsTable, figuresTable, carsTable};
 
-        int[] results = createDatabase("quiz_database.db", txtFilePaths, tableNames);
+        int[] results = createDatabase("the_quiz_update.db", txtFilePaths, tableNames);
 
         for(int resInt=0; resInt<results.length; resInt++){
             System.out.println(results[resInt]);
