@@ -1,21 +1,45 @@
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.*;
+import java.net.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class SQLiteTests{
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
 
-        String driversTxtPath = "/Users/ioannis/Documents/quiz/drivers.txt";
-        String constructorsTxtPath = "/Users/ioannis/Documents/quiz/constructors.txt";
-        String circuitsTxtPath = "/Users/ioannis/Documents/quiz/circuits.txt";
-        String helmetsTxtPath = "/Users/ioannis/Documents/quiz/helmets.txt";
-        String figuresTxtPath = "/Users/ioannis/Documents/quiz/figures.txt";
-        String carsTxtPath = "/Users/ioannis/Documents/quiz/cars.txt";
+        findMissingPics(getJSONInfo("http://ergast.com/api/f1/drivers.json?limit=1000&offset=0"), "Drivers", "driverId", "drivers");
+
+        //Uncomment in any case
+
+        String driversTxtPath = "/home/ioannis/Documents/quiz/drivers.txt";
+        String constructorsTxtPath = "/home/ioannis/Documents/quiz/constructors.txt";
+        String circuitsTxtPath = "/home/ioannis/Documents/quiz/circuits.txt";
+        String helmetsTxtPath = "/home/ioannis/Documents/quiz/helmets.txt";
+        String figuresTxtPath = "/home/ioannis/Documents/quiz/figures.txt";
+        String carsTxtPath = "/home/ioannis/Documents/quiz/cars.txt";
+
+
+        //Uncomment to check quiz entries
+
+        checkEntries(driversTxtPath);
+        checkEntries(constructorsTxtPath);
+        checkEntries(circuitsTxtPath);
+        checkEntries(figuresTxtPath);
+        checkEntries(helmetsTxtPath);
+        checkEntries(carsTxtPath);
+
+
+        //Uncomment to create database
+        /*
 
         String[] txtFilePaths = new String[]{driversTxtPath, constructorsTxtPath, circuitsTxtPath, helmetsTxtPath, figuresTxtPath, carsTxtPath};
 
@@ -33,8 +57,51 @@ public class SQLiteTests{
         for(int resInt=0; resInt<results.length; resInt++){
             System.out.println(results[resInt]);
         }
+*/
+
 
     }
+
+
+
+
+
+    private static ArrayList<String> findMissingPics(String jsonString, String dataName, String dataId, String dataFolder){
+
+        ArrayList<String> result = new ArrayList<>();
+
+        try{
+
+            JSONObject root = new JSONObject(jsonString);
+            JSONObject mrData= root.getJSONObject("MRData");
+            JSONObject dataTable = mrData.getJSONObject("DriverTable");
+
+            JSONArray dataArray = dataTable.getJSONArray(dataName);
+
+            for(int index=0; index<dataArray.length(); index++){
+
+                JSONObject dataObject = dataArray.getJSONObject(index);
+
+                String id = dataObject.getString(dataId);
+
+                if( !(new File("/home/ioannis/Downloads/" + dataFolder + "/" + id + ".png")).exists() ) {
+                    System.out.println(id + " file is missing");
+                    result.add(id);
+                }
+
+            }
+
+
+        }
+        catch (JSONException je){
+            System.out.println(je.getMessage());
+        }
+
+        System.out.println(result);
+        return result;
+    }
+
+
 
 
 
@@ -43,7 +110,6 @@ public class SQLiteTests{
     private static void checkEntries(String txtFilePath){
 
         try{
-
             File txtFile = new File(txtFilePath);
 
             BufferedReader reader = new BufferedReader(new FileReader(txtFile));
@@ -61,7 +127,7 @@ public class SQLiteTests{
                     System.out.println("Error in line");
                 else {
 
-                    String imagePath = "/Users/ioannis/Documents/quiz/" + entries[1] + ".png";
+                    String imagePath = "/home/ioannis/Documents/quiz/" + entries[1] + ".png";
 
                     File imageFile = new File(imagePath);
 
@@ -81,7 +147,7 @@ public class SQLiteTests{
             System.out.println(io.getMessage());
         }
 
-
+        System.out.println(txtFilePath + " checked");
     }
 
 
@@ -163,6 +229,43 @@ public class SQLiteTests{
 
         return results;
     }
+
+
+
+    private static String getJSONInfo(String apiUrl){
+
+        StringBuilder sb = null;
+
+        try{
+
+            URL url = new URL(apiUrl);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+            con.setConnectTimeout(4000);
+
+            sb = new StringBuilder();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+            String line;
+
+            while ( (line = reader.readLine()) != null ){
+                sb.append(line);
+            }
+
+            con.disconnect();
+            reader.close();
+
+        }catch (MalformedURLException mue){
+            System.out.println(mue);
+        }catch (IOException io){
+            System.out.println(io.getMessage());
+        }
+
+        return sb.toString();
+    }
+
+
 
 
 }
