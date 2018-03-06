@@ -16,7 +16,11 @@ public class SQLiteTests{
 
     public static void main(String[] args){
 
-        findMissingPics(getJSONInfo("http://ergast.com/api/f1/drivers.json?limit=1000&offset=0"), "Drivers", "driverId", "drivers");
+        //Uncomment to check missing files
+        /*
+        findMissingPics(getJSONInfo("http://ergast.com/api/f1/constructors.json?limit=844&offset=0"), "Constructors", "ConstructorTable", "constructorId",
+                                                                                                                                            "constructors", ".gif");
+        */
 
         //Uncomment in any case
 
@@ -29,18 +33,17 @@ public class SQLiteTests{
 
 
         //Uncomment to check quiz entries
-
+        /*
         checkEntries(driversTxtPath);
         checkEntries(constructorsTxtPath);
         checkEntries(circuitsTxtPath);
         checkEntries(figuresTxtPath);
         checkEntries(helmetsTxtPath);
         checkEntries(carsTxtPath);
-
+        */
 
         //Uncomment to create database
         /*
-
         String[] txtFilePaths = new String[]{driversTxtPath, constructorsTxtPath, circuitsTxtPath, helmetsTxtPath, figuresTxtPath, carsTxtPath};
 
         String driversTable = "drivers_table";
@@ -57,8 +60,7 @@ public class SQLiteTests{
         for(int resInt=0; resInt<results.length; resInt++){
             System.out.println(results[resInt]);
         }
-*/
-
+        */
 
     }
 
@@ -66,7 +68,7 @@ public class SQLiteTests{
 
 
 
-    private static ArrayList<String> findMissingPics(String jsonString, String dataName, String dataId, String dataFolder){
+    private static ArrayList<String> findMissingPics(String jsonString, String dataName, String dataTabled, String dataId, String dataFolder, String fileExtension){
 
         ArrayList<String> result = new ArrayList<>();
 
@@ -74,7 +76,7 @@ public class SQLiteTests{
 
             JSONObject root = new JSONObject(jsonString);
             JSONObject mrData= root.getJSONObject("MRData");
-            JSONObject dataTable = mrData.getJSONObject("DriverTable");
+            JSONObject dataTable = mrData.getJSONObject(dataTabled);
 
             JSONArray dataArray = dataTable.getJSONArray(dataName);
 
@@ -84,7 +86,7 @@ public class SQLiteTests{
 
                 String id = dataObject.getString(dataId);
 
-                if( !(new File("/home/ioannis/Downloads/" + dataFolder + "/" + id + ".png")).exists() ) {
+                if( !(new File("/home/ioannis/Downloads/" + dataFolder + "/" + id + fileExtension)).exists() ) {
                     System.out.println(id + " file is missing");
                     result.add(id);
                 }
@@ -163,7 +165,7 @@ public class SQLiteTests{
 
            try {
 
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:/Users/ioannis/Documents/quiz/databases/"
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:/home/ioannis/Documents/quiz/databases/"
                                                                                             + databaseFile);
 
             Statement statement = connection.createStatement();
@@ -226,7 +228,7 @@ public class SQLiteTests{
             System.out.println(io.getMessage());
         }
 
-
+        System.out.println("Database done...");
         return results;
     }
 
