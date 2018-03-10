@@ -18,7 +18,7 @@ public class SQLiteTests{
 
         //Uncomment to check missing files
         /*
-        findMissingPics(getJSONInfo("http://ergast.com/api/f1/constructors.json?limit=844&offset=0"), "Constructors", "ConstructorTable", "constructorId",
+        findMissingPics(getJSONInfo("http://ergast.com/api/f1/constructors.json?limit=1000&offset=0"), "Constructors", "ConstructorTable", "constructorId",
                                                                                                                                             "constructors", ".gif");
         */
 
@@ -126,10 +126,10 @@ public class SQLiteTests{
                 String[] entries = line.split(",");
 
                 if(entries.length != 7)
-                    System.out.println("Error in line");
+                    System.out.println("Error in line " + counter);
                 else {
 
-                    String imagePath = "/home/ioannis/Documents/quiz/" + entries[1] + ".png";
+                    String imagePath = "/home/ioannis/Documents/quiz/" + entries[1];
 
                     File imageFile = new File(imagePath);
 
@@ -195,7 +195,7 @@ public class SQLiteTests{
                     String[] entries = line.split(",");
 
                     String link = ", '" + entries[0].replace("'", "''") + "'";
-                    String photoPath = ", '" + entries[1] + ".png'";
+                    String photoPath = ", '" + entries[1] + "'";
                     String question = ", '" + entries[2] + "'";
                     String answer = ", '" + entries[3] + "'";
                     String false1 = ", '" + entries[4] + "'";
