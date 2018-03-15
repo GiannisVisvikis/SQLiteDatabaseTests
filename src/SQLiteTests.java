@@ -1,9 +1,5 @@
 
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.*;
 import java.net.*;
 import java.sql.Connection;
@@ -67,7 +63,7 @@ public class SQLiteTests{
 
 
 
-
+    /*
     private static ArrayList<String> findMissingPics(String jsonString, String dataName, String dataTabled, String dataId, String dataFolder, String fileExtension){
 
         ArrayList<String> result = new ArrayList<>();
@@ -103,7 +99,7 @@ public class SQLiteTests{
         return result;
     }
 
-
+    */
 
 
 
