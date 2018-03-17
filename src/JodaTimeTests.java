@@ -1,17 +1,15 @@
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
+import java.io.*;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -23,20 +21,34 @@ public class JodaTimeTests {
 
     public static void main(String[] args) {
 
-        JodaTimeTests jtt = new JodaTimeTests();
 
-        for(String date : jtt.getRaceDates("http://ergast.com/api/f1/2018/races.json")){
-            DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-            DateTime dt = formatter.parseDateTime(date);
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
-            DateTime currentDate = DateTime.now();
+        try{
 
-            System.out.println(currentDate.getMillis());
+            DateTime current = new DateTime().toDateTime(DateTimeZone.UTC);
+            System.out.println(current.getYear() + "-" + current.getMonthOfYear() + "-" + current.getDayOfMonth() + " " + current.getHourOfDay() + ":" + current.getMinuteOfHour() + ":" + current.getSecondOfMinute());
 
 
+            BufferedReader br = new BufferedReader(new FileReader(new File("/home/ioannis/Documents/dates.txt")));
 
-            System.out.println(dt.getYear());
+            String line;
+
+            while ( (line = br.readLine()) != null){
+
+                DateTime dt = formatter.parseDateTime(line);
+                DateTime utc = dt.toDateTime(DateTimeZone.UTC);
+
+            }
+
         }
+        catch (FileNotFoundException fnf){
+            System.out.println(fnf.getMessage());
+        }
+        catch (IOException io){
+            System.out.println(io.getMessage());
+        }
+
 
     }
 
