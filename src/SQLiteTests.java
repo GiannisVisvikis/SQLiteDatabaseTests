@@ -13,33 +13,34 @@ public class SQLiteTests{
     public static void main(String[] args){
 
         //Uncomment to check missing files
-        /*
-        findMissingPics(getJSONInfo("http://ergast.com/api/f1/constructors.json?limit=1000&offset=0"), "Constructors", "ConstructorTable", "constructorId",
-                                                                                                                                            "constructors", ".gif");
-        */
+
+        //findMissingPics(getJSONInfo("http://ergast.com/api/f1/constructors.json?limit=1000&offset=0"), "Constructors", "ConstructorTable", "constructorId","constructors", ".gif");
+
 
         //Uncomment in any case
 
-        String driversTxtPath = "/home/ioannis/Documents/quiz/drivers.txt";
-        String constructorsTxtPath = "/home/ioannis/Documents/quiz/constructors.txt";
-        String circuitsTxtPath = "/home/ioannis/Documents/quiz/circuits.txt";
-        String helmetsTxtPath = "/home/ioannis/Documents/quiz/helmets.txt";
-        String figuresTxtPath = "/home/ioannis/Documents/quiz/figures.txt";
-        String carsTxtPath = "/home/ioannis/Documents/quiz/cars.txt";
+        String driversTxtPath = "/Users/ioannis/Documents/quiz/drivers.txt";
+        String constructorsTxtPath = "/Users/ioannis/Documents/quiz/constructors.txt";
+        String circuitsTxtPath = "/Users/ioannis/Documents/quiz/circuits.txt";
+        String helmetsTxtPath = "/Users/ioannis/Documents/quiz/helmets.txt";
+        String figuresTxtPath = "/Users/ioannis/Documents/quiz/figures.txt";
+        String carsTxtPath = "/Users/ioannis/Documents/quiz/cars.txt";
 
 
         //Uncomment to check quiz entries
-        /*
+/*
+
         checkEntries(driversTxtPath);
         checkEntries(constructorsTxtPath);
         checkEntries(circuitsTxtPath);
         checkEntries(figuresTxtPath);
         checkEntries(helmetsTxtPath);
         checkEntries(carsTxtPath);
-        */
+
+*/
 
         //Uncomment to create database
-        /*
+
         String[] txtFilePaths = new String[]{driversTxtPath, constructorsTxtPath, circuitsTxtPath, helmetsTxtPath, figuresTxtPath, carsTxtPath};
 
         String driversTable = "drivers_table";
@@ -56,7 +57,7 @@ public class SQLiteTests{
         for(int resInt=0; resInt<results.length; resInt++){
             System.out.println(results[resInt]);
         }
-        */
+
 
     }
 
@@ -125,7 +126,7 @@ public class SQLiteTests{
                     System.out.println("Error in line " + counter);
                 else {
 
-                    String imagePath = "/home/ioannis/Documents/quiz/" + entries[1];
+                    String imagePath = "/Users/ioannis/Documents/quiz/" + entries[1];
 
                     File imageFile = new File(imagePath);
 
@@ -161,7 +162,7 @@ public class SQLiteTests{
 
            try {
 
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:/home/ioannis/Documents/quiz/databases/"
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:/Users/ioannis/Documents/quiz/databases/"
                                                                                             + databaseFile);
 
             Statement statement = connection.createStatement();
